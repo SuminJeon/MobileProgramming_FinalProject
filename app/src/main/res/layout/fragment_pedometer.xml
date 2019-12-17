@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#ffffff"
     tools:context=".feature.pedometer.PedometerFragment">
 
     <Button
@@ -27,7 +28,8 @@
         android:layout_height="45dp"
         android:layout_marginTop="25dp"
         android:layout_marginEnd="20dp"
-        android:background="@drawable/bg_btn"
+        android:background="@drawable/bg_btn_inactive"
+        android:enabled="false"
         android:text="stop"
         android:textColor="#ffffff"
         android:textSize="18sp"

@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     private void setViewPager(ViewPager _viewPager){
         PagerAdapter pagerAdapter = new PagerAdapter(getSupportFragmentManager(), 2);
         pagerAdapter.addFragment(new PedometerFragment(this));
-        pagerAdapter.addFragment(new RecordFragment());
+        pagerAdapter.addFragment(new RecordFragment(this));
         _viewPager.setAdapter(pagerAdapter);
     }
 }
