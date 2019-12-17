@@ -2,6 +2,8 @@ package com.sopt25.sunnni.mobileprogramming_finalproject.feature.record;
 
 
 import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -13,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.sopt25.sunnni.mobileprogramming_finalproject.R;
+import com.sopt25.sunnni.mobileprogramming_finalproject.data.DBHelper;
 import com.sopt25.sunnni.mobileprogramming_finalproject.data.Record;
 
 import java.util.ArrayList;
@@ -23,13 +26,16 @@ import java.util.ArrayList;
 public class RecordFragment extends Fragment {
 
     Context context;
+    SQLiteDatabase recordsDB;
+    DBHelper helper;
 
     RecyclerView recyclerView;
     RecordsRvAdapter rvAdapter;
     ArrayList<Record> mList;
 
-    public RecordFragment(Context ctx) {
+    public RecordFragment(Context ctx, SQLiteDatabase db) {
         this.context = ctx;
+        this.recordsDB = db;
     }
 
 
@@ -45,22 +51,26 @@ public class RecordFragment extends Fragment {
         rvAdapter = new RecordsRvAdapter(mList);
         recyclerView.setAdapter(rvAdapter);
 
-        makeDummy();
+        helper = new DBHelper(context, "recordsDB", null,1);
+        recordsDB = helper.getReadableDatabase();
+
+        dbToList();
 
         return view;
     }
 
-    private void makeDummy(){
-        mList.add(new Record("1000", "2019/12/17"));
-        mList.add(new Record("1000", "2019/12/17"));
-        mList.add(new Record("1000", "2019/12/17"));
-        mList.add(new Record("1000", "2019/12/17"));
-        mList.add(new Record("1000", "2019/12/17"));
-        mList.add(new Record("1000", "2019/12/17"));
-        mList.add(new Record("1000", "2019/12/17"));
-        mList.add(new Record("1000", "2019/12/17"));
-        mList.add(new Record("1000", "2019/12/17"));
-        mList.add(new Record("1000", "2019/12/17"));
+    private void dbToList() {
+        String sql = "select mandarineCount,date from DBTABLE";
+        Cursor cursor = recordsDB.rawQuery(sql, null);
+        int numData;
+        if (cursor != null) {
+            numData = cursor.getCount();
+            for (int i = 0; i < numData; i++) {
+                cursor.moveToNext();
+                mList.add(new Record(cursor.getString(0), cursor.getString(1)));
+            }
+            cursor.close();
+        }
 
         rvAdapter.notifyDataSetChanged();
     }

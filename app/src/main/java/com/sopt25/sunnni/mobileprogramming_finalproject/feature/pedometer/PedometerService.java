@@ -70,7 +70,7 @@ public class PedometerService extends Service implements SensorEventListener {
     public boolean onUnbind(Intent intent) {
         unRegistManager();
         if (callback != null)
-            callback.onUnbindService();
+            callback.onUnbindService(mStepDetector);
         return super.onUnbind(intent);
     }
 

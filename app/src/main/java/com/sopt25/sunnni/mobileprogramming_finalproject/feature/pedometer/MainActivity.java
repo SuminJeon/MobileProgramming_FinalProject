@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.MenuItem;
 
@@ -16,6 +17,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
     private ViewPager mViewPager;
     private BottomNavigationView mBNV;
+    public SQLiteDatabase recordsDB;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,8 +79,8 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
     private void setViewPager(ViewPager _viewPager){
         PagerAdapter pagerAdapter = new PagerAdapter(getSupportFragmentManager(), 2);
-        pagerAdapter.addFragment(new PedometerFragment(this));
-        pagerAdapter.addFragment(new RecordFragment(this));
+        pagerAdapter.addFragment(new PedometerFragment(this, recordsDB));
+        pagerAdapter.addFragment(new RecordFragment(this, recordsDB));
         _viewPager.setAdapter(pagerAdapter);
     }
 }
