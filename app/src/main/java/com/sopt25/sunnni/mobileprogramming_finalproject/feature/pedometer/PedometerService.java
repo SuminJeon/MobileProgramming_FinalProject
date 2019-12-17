@@ -55,10 +55,11 @@ public class PedometerService extends Service implements SensorEventListener {
         }
     }
 
-
     // bind
     @Override
     public IBinder onBind(Intent intent) {
+        sensorManager.registerListener(this, stepDetectorSensor, SensorManager.SENSOR_DELAY_GAME);
+        sensorManager.registerListener(this, stepCountSensor, SensorManager.SENSOR_DELAY_GAME);
         return mServiceBinder;
         // main activity에서 binder 받으면 thread.start();
     }
@@ -67,10 +68,21 @@ public class PedometerService extends Service implements SensorEventListener {
     // unbind
     @Override
     public boolean onUnbind(Intent intent) {
+        unRegistManager();
         if (callback != null)
             callback.onUnbindService();
         return super.onUnbind(intent);
     }
+
+
+    public void unRegistManager() {
+        try {
+            sensorManager.unregisterListener(this);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
@@ -89,6 +101,15 @@ public class PedometerService extends Service implements SensorEventListener {
     @Override
     public void onAccuracyChanged(Sensor sensor, int i) {
 
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if(sensorManager != null){
+            sensorManager.unregisterListener(this);
+            mStepDetector = 0;
+        }
     }
 
     private class PedometerThread extends Thread {

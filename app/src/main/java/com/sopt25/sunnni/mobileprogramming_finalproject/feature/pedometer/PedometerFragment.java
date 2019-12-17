@@ -34,8 +34,6 @@ public class PedometerFragment extends Fragment implements View.OnClickListener{
     private PedometerService mPedoService;
     boolean isService = false;
 
-    ServiceConnection serviceConnection;
-
     // 서비스의 이벤트 결과 전달
     private StepCallback callback = new StepCallback() {
         @Override
@@ -54,7 +52,7 @@ public class PedometerFragment extends Fragment implements View.OnClickListener{
         this.context = ctx;
     }
 
-    /*private ServiceConnection serviceConnection = new ServiceConnection() {
+    private ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
             PedometerService.ServiceBinder mBinder = (PedometerService.ServiceBinder) iBinder;
@@ -67,7 +65,7 @@ public class PedometerFragment extends Fragment implements View.OnClickListener{
         public void onServiceDisconnected(ComponentName componentName) {
             isService = false;
         }
-    };*/
+    };
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -91,21 +89,6 @@ public class PedometerFragment extends Fragment implements View.OnClickListener{
         switch(view.getId()){
             case R.id.btn_start:
 
-                serviceConnection = new ServiceConnection() {
-                    @Override
-                    public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
-                        PedometerService.ServiceBinder mBinder = (PedometerService.ServiceBinder) iBinder;
-                        mPedoService = mBinder.getService();
-                        mPedoService.setCallback(callback);
-                        isService = true;
-                    }
-
-                    @Override
-                    public void onServiceDisconnected(ComponentName componentName) {
-                        isService = false;
-                    }
-                };
-
                 intent = new Intent(context, PedometerService.class);
                 context.bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
 
@@ -117,14 +100,16 @@ public class PedometerFragment extends Fragment implements View.OnClickListener{
                 break;
 
             case R.id.btn_stop:
+
                 mBtnStart.setBackground(ContextCompat.getDrawable(context, R.drawable.bg_btn));
                 mBtnStart.setEnabled(true);
 
                 mBtnStop.setBackground(ContextCompat.getDrawable(context, R.drawable.bg_btn_inactive));
                 mBtnStart.setEnabled(false);
+
                 try{
-                    context.stopService(intent);
                     context.unbindService(serviceConnection);
+                    context.stopService(intent);
                 } catch (Exception e){
                     e.printStackTrace();
                 }
@@ -135,6 +120,6 @@ public class PedometerFragment extends Fragment implements View.OnClickListener{
     @Override
     public void onStop() {
         super.onStop();
-        context.unbindService(serviceConnection);
+        // context.unbindService(serviceConnection);
     }
 }
